@@ -40,7 +40,7 @@ while(True):
                             reply_text += user_from + ' throws a bowl of hot soup on '
 
                             if(len(spl) == 1):
-                                reply_text += 'himself'
+                                reply_text += 'themselves'
                             else:
                                 user_rekt = spl[1]
                                 reply_text += user_rekt
