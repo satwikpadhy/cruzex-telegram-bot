@@ -15,11 +15,10 @@ request = endpoint + '/' + method
 while(True):
     try:
         query = {'offset': offset}
-        response = requests.get(request, params=query)
+        print("\n\nresponse :" + str(response) + "\n\n")
         json = response.json()
         if(json['result']):
             result = json['result']
-            print("result : " + str(result) + "\n\n")
             for update in result:
                 if 'message' in update:
                     message = update['message']
