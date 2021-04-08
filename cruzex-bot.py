@@ -4,6 +4,8 @@ import sys
 import random_rekt
 import time
 from decouple import config
+import promote
+from demote import demote
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -15,7 +17,7 @@ request = endpoint + '/' + method
 while(True):
     try:
         query = {'offset': offset}
-        print("\n\nresponse :" + str(response) + "\n\n")
+        response = requests.get(request, params=query)
         json = response.json()
         if(json['result']):
             result = json['result']
@@ -60,9 +62,16 @@ while(True):
                         if(command[:6] == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command[:5] == '/help'):
-                            reply_text = 'List of Commands : \n1. /rekt : Wreck someone in the chat'
+                            reply_text = 'List of Commands : \n1. /rekt : Wreck someone in the chat by either replying to their text or writing their username after the command'
+                            reply_text += '\n2. /promote : Promote a chat member by replying to their message with /promote'
+                            reply_text += '\n3. /demote : Demote someone from admin by replying to their messages with /demote'
+                            reply_text += '\n\nExtra Features : \nWelcome and Parting Messages when a user joins or leaves the group\n'
                         elif(command[:5] == '/rekt'):
-                            reply_text = random_rekt.random_rekt(spl,message)                          
+                            reply_text = random_rekt.random_rekt(spl,message)
+                        elif(command[:8] == '/promote'):
+                            reply_text = promote.promote(message,endpoint)
+                        elif(command[:7] == '/demote'):
+                            reply_text = demote(message, endpoint)                          
 
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
