@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import requests
 import sys
-import random_rekt
+from random_rekt import random_rekt
 import time
 from decouple import config
-import promote
+from promote import promote
 from demote import demote
+from save import save
+from get import get
+from notes import notes
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -24,6 +27,7 @@ while(True):
             for update in result:
                 if 'message' in update:
                     message = update['message']
+                    print("\nMessage\n" + str(message) + "\n") #To be Deleted
                     if 'new_chat_participant' in message:
                         newguy = message['new_chat_participant']
                         chat_id = message['chat']['id']
@@ -67,12 +71,17 @@ while(True):
                             reply_text += '\n3. /demote : Demote someone from admin by replying to their messages with /demote'
                             reply_text += '\n\nExtra Features : \nWelcome and Parting Messages when a user joins or leaves the group\n'
                         elif(command[:5] == '/rekt'):
-                            reply_text = random_rekt.random_rekt(spl,message)
+                            reply_text = random_rekt(spl,message)
                         elif(command[:8] == '/promote'):
-                            reply_text = promote.promote(message,endpoint)
+                            reply_text = promote(message,endpoint)
                         elif(command[:7] == '/demote'):
-                            reply_text = demote(message, endpoint)                          
-
+                            reply_text = demote(message, endpoint)
+                        elif(command[:5] == '/save'):
+                            reply_text = save(message,endpoint,spl,token) #Work in Progress
+                        elif(command[:4] == '/get'):
+                            reply_text = get(message,endpoint,spl,token)
+                        elif(command[:6] == '/notes'):
+                            reply_text = notes(message['chat']['id'])
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)
