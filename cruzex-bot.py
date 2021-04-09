@@ -9,6 +9,7 @@ from demote import demote
 from save import save
 from get import get
 from notes import notes
+from delete_note import del_note
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -27,7 +28,6 @@ while(True):
             for update in result:
                 if 'message' in update:
                     message = update['message']
-                    print("\nMessage\n" + str(message) + "\n") #To be Deleted
                     if 'new_chat_participant' in message:
                         newguy = message['new_chat_participant']
                         chat_id = message['chat']['id']
@@ -77,11 +77,13 @@ while(True):
                         elif(command[:7] == '/demote'):
                             reply_text = demote(message, endpoint)
                         elif(command[:5] == '/save'):
-                            reply_text = save(message,endpoint,spl,token) #Work in Progress
+                            reply_text = save(message,endpoint,spl,token)
                         elif(command[:4] == '/get'):
                             reply_text = get(message,endpoint,spl,token)
                         elif(command[:6] == '/notes'):
                             reply_text = notes(message['chat']['id'])
+                        elif(command[:7] == '/delete'):
+                            reply_text = del_note(spl, message['chat']['id'])
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)
