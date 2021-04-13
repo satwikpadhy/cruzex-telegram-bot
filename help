@@ -1,0 +1,13 @@
+List of Commands : 
+1. /rekt : Wreck someone in the chat by either replying to their text or writing their username after the command
+
+2. /promote : Promote a chat member by replying to their message with /promote
+3. /demote : Demote someone from admin by replying to their messages with /demote
+
+4. /notes : Display all the notes in the chat
+5. /save : To save a message or file as a note. reply to the message/file with /save <notename>.
+6. /get : Display a saved note with /get <notename>
+7. /delete : Delete a saved note with /delete <notename>
+
+Extra Features : 
+Welcome and Parting Messages when a user joins or leaves the group

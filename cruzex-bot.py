@@ -66,10 +66,10 @@ while(True):
                         if(command[:6] == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command[:5] == '/help'):
-                            reply_text = 'List of Commands : \n1. /rekt : Wreck someone in the chat by either replying to their text or writing their username after the command'
-                            reply_text += '\n2. /promote : Promote a chat member by replying to their message with /promote'
-                            reply_text += '\n3. /demote : Demote someone from admin by replying to their messages with /demote'
-                            reply_text += '\n\nExtra Features : \nWelcome and Parting Messages when a user joins or leaves the group\n'
+                            f = open('help')
+                            lines= f.readlines()
+                            for line in lines:
+                                reply_text += line
                         elif(command[:5] == '/rekt'):
                             reply_text = random_rekt(spl,message)
                         elif(command[:8] == '/promote'):
