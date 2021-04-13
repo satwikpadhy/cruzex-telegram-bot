@@ -9,5 +9,7 @@ List of Commands :
 6. /get : Display a saved note with /get <notename>
 7. /delete : Delete a saved note with /delete <notename>
 
+8. /convert : If a message contains time in 24hr format then convert it to 12hr. Note : The time format is hhmm without ':'
+
 Extra Features : 
 Welcome and Parting Messages when a user joins or leaves the group

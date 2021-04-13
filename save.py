@@ -1,4 +1,5 @@
 import requests
+import sys
 def save(message,endpoint,spl,token):
     if(len(spl) == 1):
         reply_text = "Please Specify the Note Name."
@@ -25,6 +26,21 @@ def save(message,endpoint,spl,token):
         chat_id = message['chat']['id']
         save_name = "saved_files/" + str(chat_id) + "_" + note_name + '.txt'
         open(save_name, 'w').write(doc_type + '_' + file_id) #create a new file with file_id
-        open('saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n') #update the notes file
-        reply_text = 'Save Name : ' + save_name
+
+        try:
+            f = open('saved_files/' + str(chat_id) + "_notes.txt")
+            lines = f.readlines()
+            chk=0
+            for line in lines:
+                if spl[1] + '\n' == line:
+                    chk = 1
+        except:
+            chk = 0
+
+        if chk==0:
+            open('saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n') #update the notes file
+            reply_text = 'Note added Successfully,\n\nSave Name : ' + save_name
+        else:
+            reply_text = 'Note updated successfully, \n\nSave Name : ' + save_name
+        
     return reply_text
