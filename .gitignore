@@ -7,3 +7,7 @@ __pycache__/notes.cpython-39.pyc
 __pycache__/promote.cpython-39.pyc
 __pycache__/save.cpython-39.pyc
 *.txt
+.vscode/settings.json
+*.pyc
+*.pyc
+__pycache__/delete_note.cpython-39.pyc

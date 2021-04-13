@@ -10,6 +10,7 @@ from save import save
 from get import get
 from notes import notes
 from delete_note import del_note
+from time_convert import time_convert
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -84,6 +85,8 @@ while(True):
                             reply_text = notes(message['chat']['id'])
                         elif(command[:7] == '/delete'):
                             reply_text = del_note(spl, message['chat']['id'])
+                        elif(command[:8] == '/convert'):
+                            reply_text = time_convert(message,spl)
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)
