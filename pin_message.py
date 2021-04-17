@@ -1,14 +1,9 @@
 import requests
+from userStatus import userStatus
 
 def pin_msg(message, spl, endpoint):
     try:
-        chat_id = message['chat']['id'] #chat_id of the group
-        user_id = message['from']['id'] #user_id of the sender
-        method_resp = 'getChatMember'
-        query_resp = {'chat_id' : chat_id, 'user_id' : user_id}
-        response = requests.get(endpoint + '/' + method_resp, params=query_resp)
-        json = response.json()
-        status = str(json['result']['status']) #status of the sender
+        status = userStatus(message,endpoint)
         if(status == 'administrator' or status == 'creator'):
             if('reply_to_message' in message):
                 chat_id = message['chat']['id']
@@ -34,16 +29,20 @@ def pin_msg(message, spl, endpoint):
     return reply_text
 
 def unpin_msg(message, endpoint):
-    try:
-        chat_id = message['chat']['id']
-        method_resp = 'unpinChatMessage'
-        query_resp = {'chat_id' : chat_id}
-        response = requests.get(endpoint + '/' + method_resp, params=query_resp)
-        json = response.json()
-        if(json['result'] == True):
-            reply_text = 'Last pinned message unpinned successfully'
-        else:
-            reply_text = str(json)
-    except:
-        reply_text = "unexpected error."
+    status = userStatus(message,endpoint)
+    if(status == 'administrator' or status == 'creator'):
+        try:
+            chat_id = message['chat']['id']
+            method_resp = 'unpinChatMessage'
+            query_resp = {'chat_id' : chat_id}
+            response = requests.get(endpoint + '/' + method_resp, params=query_resp)
+            json = response.json()
+            if(json['result'] == True):
+                reply_text = 'Last pinned message unpinned successfully'
+            else:
+                reply_text = str(json)
+        except:
+            reply_text = "unexpected error."
+    else:
+        reply_text = "Sorry, non-admins cannot use this command"
     return reply_text

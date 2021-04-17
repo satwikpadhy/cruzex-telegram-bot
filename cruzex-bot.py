@@ -89,7 +89,7 @@ while(True):
                         elif(command[:6] == '/notes'):
                             reply_text = notes(message['chat']['id'])
                         elif(command[:7] == '/delete'):
-                            reply_text = del_note(spl, message['chat']['id'])
+                            reply_text = del_note(spl, message['chat']['id'],message,endpoint)
                         elif(command[:8] == '/convert'):
                             reply_text = time_convert(message,spl)
                         elif(command[:4] == '/pin'):
