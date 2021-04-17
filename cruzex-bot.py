@@ -6,11 +6,9 @@ import time
 from decouple import config
 from promote import promote
 from demote import demote
-from save import save
-from get import get
-from notes import notes
-from delete_note import del_note
+from notes import notes, save, del_note, get
 from time_convert import time_convert
+from pin_message import *
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -63,6 +61,13 @@ while(True):
                         chat_id = message['chat']['id']
                         command = spl[0]
                         reply_text = ''
+
+                        if(text[:1] == '#'):
+                            temp = text.split('#')[1]
+                            temp = temp.split(' ')[0]
+                            inp = ['/get']
+                            inp.append(temp)
+                            reply_text = get(message,endpoint,inp,token)
                         
                         if(command[:6] == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
@@ -87,6 +92,10 @@ while(True):
                             reply_text = del_note(spl, message['chat']['id'])
                         elif(command[:8] == '/convert'):
                             reply_text = time_convert(message,spl)
+                        elif(command[:4] == '/pin'):
+                            reply_text = pin_msg(message, spl, endpoint)
+                        elif(command[:6] == '/unpin'):
+                            reply_text = unpin_msg(message, endpoint)
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)

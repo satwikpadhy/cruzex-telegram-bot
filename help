@@ -6,10 +6,13 @@ List of Commands :
 
 4. /notes : Display all the notes in the chat
 5. /save : To save a message or file as a note. reply to the message/file with /save <notename>.
-6. /get : Display a saved note with /get <notename>
+6. /get : Display a saved note with /get <notename> or usue #<notename>
 7. /delete : Delete a saved note with /delete <notename>
 
 8. /convert : If a message contains time in 24hr format then convert it to 12hr. Note : The time format is hhmm without ':'
+
+9. /pin : Reply to a message with /pin to pin. use /pin loud if you want to notify all users.
+10. /unpin : unpin the last pinned message.
 
 Extra Features : 
 Welcome and Parting Messages when a user joins or leaves the group
