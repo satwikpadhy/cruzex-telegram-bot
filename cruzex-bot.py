@@ -8,7 +8,8 @@ from promote import promote
 from demote import demote
 from notes import notes, save, del_note, get
 from time_convert import time_convert
-from pin_message import *
+from pin_message import pin_msg, unpin_msg
+from userManagement import banUser, unbanUser, kickUser, warnUser, noOfWarns, removeWarn
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -69,33 +70,45 @@ while(True):
                             inp.append(temp)
                             reply_text = get(message,endpoint,inp,token)
                         
-                        if(command[:6] == '/start'):
+                        if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
-                        elif(command[:5] == '/help'):
+                        elif(command == '/help'):
                             f = open('help')
                             lines= f.readlines()
                             for line in lines:
                                 reply_text += line
-                        elif(command[:5] == '/rekt'):
+                        elif(command == '/rekt'):
                             reply_text = random_rekt(spl,message)
-                        elif(command[:8] == '/promote'):
+                        elif(command == '/promote'):
                             reply_text = promote(message,endpoint)
-                        elif(command[:7] == '/demote'):
+                        elif(command == '/demote'):
                             reply_text = demote(message, endpoint)
-                        elif(command[:5] == '/save'):
+                        elif(command == '/save'):
                             reply_text = save(message,endpoint,spl,token)
-                        elif(command[:4] == '/get'):
+                        elif(command == '/get'):
                             reply_text = get(message,endpoint,spl,token)
-                        elif(command[:6] == '/notes'):
+                        elif(command == '/notes'):
                             reply_text = notes(message['chat']['id'])
-                        elif(command[:7] == '/delete'):
+                        elif(command == '/delete'):
                             reply_text = del_note(spl, message['chat']['id'],message,endpoint)
-                        elif(command[:8] == '/convert'):
+                        elif(command == '/convert'):
                             reply_text = time_convert(message,spl)
-                        elif(command[:4] == '/pin'):
+                        elif(command == '/pin'):
                             reply_text = pin_msg(message, spl, endpoint)
-                        elif(command[:6] == '/unpin'):
+                        elif(command == '/unpin'):
                             reply_text = unpin_msg(message, endpoint)
+                        elif(command == '/ban'):
+                            reply_text = banUser(message,endpoint)
+                        elif(command == '/unban'):
+                            reply_text = unbanUser(message,endpoint)
+                        elif(command == '/kick'):
+                            reply_text = kickUser(message,endpoint)
+                        elif(command == '/warn'):
+                            reply_text = warnUser(message, endpoint)
+                        elif(command == '/warns'):
+                            reply_text = noOfWarns(message)
+                        elif(command == '/removewarn'):
+                            reply_text = removeWarn(message)
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)
@@ -110,4 +123,4 @@ while(True):
         exit(1)
     except:
         print(time.ctime(), ": Unexpected error", sys.exc_info()[0])
-        time.sleep(300)
+        time.sleep(90)

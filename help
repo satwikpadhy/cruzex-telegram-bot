@@ -6,13 +6,20 @@ List of Commands :
 
 4. /notes : Display all the notes in the chat
 5. /save : To save a message or file as a note. reply to the message/file with /save <notename>.
-6. /get : Display a saved note with /get <notename> or usue #<notename>
+6. /get : Display a saved note with /get <notename> or use #<notename>
 7. /delete : Delete a saved note with /delete <notename>
 
 8. /convert : If a message contains time in 24hr format then convert it to 12hr. Note : The time format is hhmm without ':'
 
 9. /pin : Reply to a message with /pin to pin. use /pin loud if you want to notify all users.
 10. /unpin : unpin the last pinned message.
+
+11. /kick - Kick an user from the group. The user will be able to join using group's invite link
+12. /ban - Kick and Ban an user from the group. The user will not be able to join using the group's invite link.
+13. /unban - Unban an user. The user will now be able to join using the group's invite link.
+14. /warn - Warn the user. If the user gets three warnings then the user will be 'kicked'. Reply to a message of the user with /warn.
+15. /removewarn - remove 1 warning from the specified user. Reply to a message of the user with /warn.
+16. /warns - Returns the numbers of warnings given to the user. Reply to a message of the user with /warn to use this command.
 
 Extra Features : 
 Welcome and Parting Messages when a user joins or leaves the group

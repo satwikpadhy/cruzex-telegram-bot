@@ -31,7 +31,7 @@ def promote(message,endpoint):
                 else:
                     reply_text = "Successfully Promoted!"               
         else:
-            reply_text = "Please reply the the person's text while writing the command for this to work"
+            reply_text = "Please reply to the person's text while writing the command for this to work"
     else:
         reply_text = "Sorry, non-admins cannot use this command"
 
