@@ -69,7 +69,7 @@ while(True):
                             temp = temp.split(' ')[0]
                             inp = ['/get']
                             inp.append(temp)
-                            reply_text = get(message,endpoint,inp,token)
+                            reply_text = get(message,endpoint,inp,token,path)
                         
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
