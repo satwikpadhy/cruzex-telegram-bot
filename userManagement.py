@@ -16,20 +16,24 @@ def banUser(message,endpoint):
     if(status == 'administrator' or status == 'creator'):
         try:
             if 'reply_to_message' in message:
-                chat_id = message['chat']['id']
-                user_id = message['reply_to_message']['from']['id']
-                if 'username' in message['reply_to_message']['from']:
-                    spec_user = '@' + message['reply_to_message']['from']['username']
+                admin_check = userStatus(message['reply_to_message'], endpoint)
+                if(admin_check == 'administrator' or admin_check == 'creator'):
+                    reply_text = 'Ah! these admins are too powerful for me :('
                 else:
-                    spec_user = message['reply_to_message']['from']['first_name']
-                method_resp = 'kickChatMember'
-                query_resp = {'chat_id' : chat_id, 'user_id' : user_id}
-                response = requests.get(endpoint + '/' + method_resp, params=query_resp)
-                json = response.json()
-                if(json['ok'] == True):
-                    reply_text = spec_user + " Banned!"
-                else:
-                    reply_text = str(json['description'])
+                    chat_id = message['chat']['id']
+                    user_id = message['reply_to_message']['from']['id']
+                    if 'username' in message['reply_to_message']['from']:
+                        spec_user = '@' + message['reply_to_message']['from']['username']
+                    else:
+                        spec_user = message['reply_to_message']['from']['first_name']
+                    method_resp = 'kickChatMember'
+                    query_resp = {'chat_id' : chat_id, 'user_id' : user_id}
+                    response = requests.get(endpoint + '/' + method_resp, params=query_resp)
+                    json = response.json()
+                    if(json['ok'] == True):
+                        reply_text = spec_user + " Banned!"
+                    else:
+                        reply_text = str(json['description'])
             else:
                 reply_text = 'Please reply to a message of the user you want to ban'
         except:
@@ -43,26 +47,30 @@ def unbanUser(message,endpoint,kick = False):
     if(status == 'administrator' or status == 'creator'):
         try:
             if 'reply_to_message' in message:
-                chat_id = message['chat']['id']
-                user_id = message['reply_to_message']['from']['id']
-                if 'username' in message['reply_to_message']['from']:
-                    spec_user = '@' + message['reply_to_message']['from']['username']
+                admin_check = userStatus(message['reply_to_message'], endpoint)
+                if(admin_check == 'administrator' or admin_check == 'creator'):
+                    reply_text = 'Ah! these admins are too powerful for me :('
                 else:
-                    spec_user = message['reply_to_message']['from']['first_name']
-                method_resp = 'unbanChatMember'
-                if kick == True:
-                    query_resp = {'chat_id' : chat_id, 'user_id' : user_id,}
-                else:
-                    query_resp = {'chat_id' : chat_id, 'user_id' : user_id, 'only_if_banned' : True}
-                response = requests.get(endpoint + '/' + method_resp, params=query_resp)
-                json = response.json()
-                if(json['ok'] == True):
-                    if(kick == True):
-                        reply_text = ''
+                    chat_id = message['chat']['id']
+                    user_id = message['reply_to_message']['from']['id']
+                    if 'username' in message['reply_to_message']['from']:
+                        spec_user = '@' + message['reply_to_message']['from']['username']
                     else:
-                        reply_text = spec_user + " UnBanned!"
-                else:
-                    reply_text = str(json['description'])
+                        spec_user = message['reply_to_message']['from']['first_name']
+                    method_resp = 'unbanChatMember'
+                    if kick == True:
+                        query_resp = {'chat_id' : chat_id, 'user_id' : user_id,}
+                    else:
+                        query_resp = {'chat_id' : chat_id, 'user_id' : user_id, 'only_if_banned' : True}
+                    response = requests.get(endpoint + '/' + method_resp, params=query_resp)
+                    json = response.json()
+                    if(json['ok'] == True):
+                        if(kick == True):
+                            reply_text = ''
+                        else:
+                            reply_text = spec_user + " UnBanned!"
+                    else:
+                        reply_text = str(json['description'])
             else:
                 reply_text = 'Please reply to a message of the user you want to'
                 if(kick == True):
@@ -77,19 +85,23 @@ def unbanUser(message,endpoint,kick = False):
 
 def noOfWarns(message):
     if 'reply_to_message' in message:
-        chat_id = message['chat']['id']
-        user_id = message['reply_to_message']['from']['id']
-        if 'username' in message['reply_to_message']['from']:
-            spec_user = '@' + message['reply_to_message']['from']['username']
+        admin_check = userStatus(message['reply_to_message'], endpoint)
+        if(admin_check == 'administrator' or admin_check == 'creator'):
+            reply_text = 'Ah! these admins are too powerful for me :('
         else:
-            spec_user = message['reply_to_message']['from']['first_name']
-        save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
-        try:
-            with open(save_name, 'rb') as f:
-                user = pickle.load(f)
-                reply_text = spec_user + " has " + str(user.warns) + ' warnings'
-        except FileNotFoundError:
-            reply_text = spec_user +' has never been warned'
+            chat_id = message['chat']['id']
+            user_id = message['reply_to_message']['from']['id']
+            if 'username' in message['reply_to_message']['from']:
+                spec_user = '@' + message['reply_to_message']['from']['username']
+            else:
+                spec_user = message['reply_to_message']['from']['first_name']
+            save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+            try:
+                with open(save_name, 'rb') as f:
+                    user = pickle.load(f)
+                    reply_text = spec_user + " has " + str(user.warns) + ' warnings'
+            except FileNotFoundError:
+                reply_text = spec_user +' has never been warned'
     else:
         reply_text = 'Please reply to a message of the user you want to ban'
 
@@ -101,34 +113,38 @@ def warnUser(message, endpoint):
     if(status == 'administrator' or status == 'creator'):
         try:
             if 'reply_to_message' in message:
-                chat_id = message['chat']['id']
-                user_id = message['reply_to_message']['from']['id']
-                if 'username' in message['reply_to_message']['from']:
-                    spec_user = message['reply_to_message']['from']['username']
+                admin_check = userStatus(message['reply_to_message'], endpoint)
+                if(admin_check == 'administrator' or admin_check == 'creator'):
+                    reply_text = 'Ah! these admins are too powerful for me :('
                 else:
-                    spec_user = message['reply_to_message']['from']['first_name']
-                
-                save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
-                try:
-                    with open(save_name, 'rb') as f:
-                        user = pickle.load(f)
-                        user.warns += 1
-                        warns = user.warns
-
-                    with open(save_name, 'wb') as f:
-                        pickle.dump(user, f)
+                    chat_id = message['chat']['id']
+                    user_id = message['reply_to_message']['from']['id']
+                    if 'username' in message['reply_to_message']['from']:
+                        spec_user = message['reply_to_message']['from']['username']
+                    else:
+                        spec_user = message['reply_to_message']['from']['first_name']
                     
-                except FileNotFoundError: 
-                    #If file is not found then the user was never warned in the chat before.
-                    user = userInfo(user_id, chat_id, 1)
-                    with open(save_name, 'wb') as f:
-                        pickle.dump(user, f)
-                        warns = 1
-                if(warns == 3):
-                    reply_text = unbanUser(message, endpoint, True)
-                    os.remove(save_name)
-                else:
-                    reply_text = spec_user + ' has ' + str(warns) + " warnings"
+                    save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+                    try:
+                        with open(save_name, 'rb') as f:
+                            user = pickle.load(f)
+                            user.warns += 1
+                            warns = user.warns
+
+                        with open(save_name, 'wb') as f:
+                            pickle.dump(user, f)
+                        
+                    except FileNotFoundError: 
+                        #If file is not found then the user was never warned in the chat before.
+                        user = userInfo(user_id, chat_id, 1)
+                        with open(save_name, 'wb') as f:
+                            pickle.dump(user, f)
+                            warns = 1
+                    if(warns == 3):
+                        reply_text = unbanUser(message, endpoint, True)
+                        os.remove(save_name)
+                    else:
+                        reply_text = spec_user + ' has ' + str(warns) + " warnings"
             else:
                 reply_text = 'Please reply to a message of the user you want to warn.'
         except:
