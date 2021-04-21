@@ -120,9 +120,9 @@ def warnUser(message, endpoint):
                     chat_id = message['chat']['id']
                     user_id = message['reply_to_message']['from']['id']
                     if 'username' in message['reply_to_message']['from']:
-                        spec_user = message['reply_to_message']['from']['username']
+                        spec_user = '@' + message['reply_to_message']['from']['username']
                     else:
-                        spec_user = message['reply_to_message']['from']['first_name']
+                        spec_user = '@' + message['reply_to_message']['from']['first_name']
                     
                     save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
                     try:
