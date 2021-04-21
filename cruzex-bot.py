@@ -9,7 +9,7 @@ from demote import demote
 from notes import notes, save, del_note, get
 from time_convert import time_convert
 from pin_message import pin_msg, unpin_msg
-from userManagement import banUser, unbanUser, kickUser, warnUser, noOfWarns, removeWarn
+from userManagement import banUser, unbanUser, warnUser, noOfWarns, removeWarn
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
@@ -102,7 +102,7 @@ while(True):
                         elif(command == '/unban'):
                             reply_text = unbanUser(message,endpoint)
                         elif(command == '/kick'):
-                            reply_text = kickUser(message,endpoint)
+                            reply_text = unbanUser(message,endpoint,True)
                         elif(command == '/warn'):
                             reply_text = warnUser(message, endpoint)
                         elif(command == '/warns'):
