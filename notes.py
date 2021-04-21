@@ -5,8 +5,6 @@ from userStatus import userStatus
 
 def notes(chat_id,path):
     try:
-        file_path = path + 'saved_files/'
-        #f = open('saved_files/' + str(chat_id) + '_' + 'notes.txt')
         f = open(path + 'saved_files/' + str(chat_id) + '_' + 'notes.txt')
         lines = f.readlines()
         reply_text = 'Notes in this chat :\n'

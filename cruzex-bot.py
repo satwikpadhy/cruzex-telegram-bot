@@ -13,7 +13,7 @@ from userManagement import banUser, unbanUser, warnUser, noOfWarns, removeWarn
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
-path = config('path_win_d')
+path = config('path_win_e')
 endpoint = botapi_url + token
 offset = 0
 method = 'getUpdates'

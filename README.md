@@ -7,6 +7,8 @@
 
  Getting Started :
  1. create a file named .env in the bot directory
- 2. File contents : token='Your BOT TOKEN'
+ 2. File contents : 
+   token='Your BOT TOKEN'
+   path='The path of the folder the bot's files are'  e.g /home/pi/cruzex-telegram-bot/
  3. Run the program using the following command :
     python3 cruzex-bot.py

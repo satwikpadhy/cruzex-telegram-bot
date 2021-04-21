@@ -19,10 +19,13 @@ def random_rekt(spl,message):
     else:
         user_rekt = spl[1]
 
-    #n = random.randint(0,2)  #will be uncommented when there will be multiple rekt sentences.
+    n = random.randint(0,2)
     n=0
     if(n == 0):
         reply_text = user_from + " throws a hot pot on " + user_rekt + "'s face."
-    #insert suitable statements for each rekt sentence.
+    if(n == 1):
+        reply_text = user_from + " whacks " + user_rekt + " with a toaster"
+    if(n == 2):
+        reply_text = user_from + " pins " + user_rekt + " down and repeatedly hits him with a fire extinguisher"
 
     return reply_text
