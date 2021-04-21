@@ -20,7 +20,7 @@ def random_rekt(spl,message):
         user_rekt = spl[1]
 
     n = random.randint(0,2)
-    n=0
+
     if(n == 0):
         reply_text = user_from + " throws a hot pot on " + user_rekt + "'s face."
     if(n == 1):
