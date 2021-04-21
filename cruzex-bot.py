@@ -13,6 +13,7 @@ from userManagement import banUser, unbanUser, warnUser, noOfWarns, removeWarn
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
+path = config('path_win_d')
 endpoint = botapi_url + token
 offset = 0
 method = 'getUpdates'
@@ -73,7 +74,8 @@ while(True):
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command == '/help'):
-                            f = open('help')
+                            file_name = path + 'help'
+                            f = open(file_name)
                             lines= f.readlines()
                             for line in lines:
                                 reply_text += line
@@ -84,13 +86,13 @@ while(True):
                         elif(command == '/demote'):
                             reply_text = demote(message, endpoint)
                         elif(command == '/save'):
-                            reply_text = save(message,endpoint,spl,token)
+                            reply_text = save(message,endpoint,spl,token,path)
                         elif(command == '/get'):
-                            reply_text = get(message,endpoint,spl,token)
+                            reply_text = get(message,endpoint,spl,token, path)
                         elif(command == '/notes'):
-                            reply_text = notes(message['chat']['id'])
+                            reply_text = notes(message['chat']['id'],path)
                         elif(command == '/delete'):
-                            reply_text = del_note(spl, message['chat']['id'],message,endpoint)
+                            reply_text = del_note(spl, message['chat']['id'],message,endpoint,path)
                         elif(command == '/convert'):
                             reply_text = time_convert(message,spl)
                         elif(command == '/pin'):
@@ -104,11 +106,11 @@ while(True):
                         elif(command == '/kick'):
                             reply_text = unbanUser(message,endpoint,True)
                         elif(command == '/warn'):
-                            reply_text = warnUser(message, endpoint)
+                            reply_text = warnUser(message, endpoint, path)
                         elif(command == '/warns'):
-                            reply_text = noOfWarns(message)
+                            reply_text = noOfWarns(message,path,endpoint)
                         elif(command == '/removewarn'):
-                            reply_text = removeWarn(message)
+                            reply_text = removeWarn(message, path)
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)

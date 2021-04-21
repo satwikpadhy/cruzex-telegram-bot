@@ -83,7 +83,7 @@ def unbanUser(message,endpoint,kick = False):
         reply_text = "Who this non-admin telling me what to do"
     return reply_text
 
-def noOfWarns(message):
+def noOfWarns(message, path, endpoint):
     if 'reply_to_message' in message:
         admin_check = userStatus(message['reply_to_message'], endpoint)
         if(admin_check == 'administrator' or admin_check == 'creator'):
@@ -95,7 +95,7 @@ def noOfWarns(message):
                 spec_user = '@' + message['reply_to_message']['from']['username']
             else:
                 spec_user = message['reply_to_message']['from']['first_name']
-            save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+            save_name = path + "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
             try:
                 with open(save_name, 'rb') as f:
                     user = pickle.load(f)
@@ -107,7 +107,7 @@ def noOfWarns(message):
 
     return reply_text
 
-def warnUser(message, endpoint):
+def warnUser(message, endpoint, path):
     status = userStatus(message,endpoint)
     reply_text = ''
     if(status == 'administrator' or status == 'creator'):
@@ -124,7 +124,7 @@ def warnUser(message, endpoint):
                     else:
                         spec_user = '@' + message['reply_to_message']['from']['first_name']
                     
-                    save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+                    save_name = path + "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
                     try:
                         with open(save_name, 'rb') as f:
                             user = pickle.load(f)
@@ -153,7 +153,7 @@ def warnUser(message, endpoint):
         reply_text = "Who this non-admin telling me what to do"
     return reply_text
 
-def removeWarn(message):
+def removeWarn(message, path):
     if 'reply_to_message' in message:
         chat_id = message['chat']['id']
         user_id = message['reply_to_message']['from']['id']
@@ -161,7 +161,7 @@ def removeWarn(message):
             spec_user = '@' + message['reply_to_message']['from']['username']
         else:
             spec_user = message['reply_to_message']['from']['first_name']
-        save_name = "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+        save_name = path + "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
         try:
             with open(save_name, 'rb') as f:
                 user = pickle.load(f)
