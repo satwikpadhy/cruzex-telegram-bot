@@ -3,6 +3,7 @@ import pickle
 import requests
 import os
 from userStatus import userStatus
+import json
 
 class userInfo:
     def __init__(self, user_id, chat_id, warns):
@@ -179,4 +180,86 @@ def removeWarn(message, path):
     else:
         reply_text = 'Please reply to a message of the user you want to remove the warn from.'
 
+    return reply_text
+
+def muteUser(message,endpoint):
+    status = userStatus(message,endpoint)
+    if(status == 'administrator' or status == 'creator'):
+        if 'reply_to_message' in message:
+            chat_id = message['chat']['id']
+            user_id = message['reply_to_message']['from']['id']
+            admin_check = userStatus(message['reply_to_message'], endpoint)
+            if(admin_check == 'administrator' or admin_check == 'creator'):
+                reply_text = 'Ah! these admins are too powerful for me :('
+            else:
+                if 'username' in message['reply_to_message']['from']:
+                    spec_user = '@' + message['reply_to_message']['from']['username']
+                else:
+                    spec_user = message['reply_to_message']['from']['first_name']
+
+                permissions = {
+                            'can_send_messages' : False,
+                            'can_send_media_messages' : False,
+                            'can_send_polls' : False,
+                            'can_send_other_messages' : False,
+                            'can_add_web_page_previews' : False,
+                            'can_change_info' : False,
+                            'can_invite_users' : False,
+                            'can_pin_messages' : False
+                }
+
+                perm = json.dumps(permissions)
+                method_resp = 'restrictChatMember'
+                query_resp = {'chat_id' : chat_id, 'user_id' : user_id, 'permissions' : perm}
+                response = requests.get(endpoint + '/' + method_resp, params=query_resp)
+                json_file = response.json()
+                if(json_file['ok'] == True):
+                    reply_text = spec_user + ' muted successfully'
+                else:
+                    reply_text = str(json_file)
+        else:
+            reply_text = 'Please reply to a message of the user you want to mute'
+    else:
+        reply_text = "Who this non-admin telling me what to do"
+    return reply_text
+
+def unmuteUser(message,endpoint):
+    status = userStatus(message,endpoint)
+    if(status == 'administrator' or status == 'creator'):
+        if 'reply_to_message' in message:
+            chat_id = message['chat']['id']
+            user_id = message['reply_to_message']['from']['id']
+            admin_check = userStatus(message['reply_to_message'], endpoint)
+            if(admin_check == 'administrator' or admin_check == 'creator'):
+                reply_text = 'Cannot unmute the one who cannot be muted.'
+            else:
+                if 'username' in message['reply_to_message']['from']:
+                    spec_user = '@' + message['reply_to_message']['from']['username']
+                else:
+                    spec_user = message['reply_to_message']['from']['first_name']
+
+                permissions = {
+                            'can_send_messages' : True,
+                            'can_send_media_messages' : True,
+                            'can_send_polls' : True,
+                            'can_send_other_messages' : True,
+                            'can_add_web_page_previews' : True,
+                            'can_change_info' : True,
+                            'can_invite_users' : True,
+                            'can_pin_messages' : True
+                }
+
+                perm = json.dumps(permissions)
+                method_resp = 'restrictChatMember'
+                query_resp = {'chat_id' : chat_id, 'user_id' : user_id, 'permissions' : perm}
+                response = requests.get(endpoint + '/' + method_resp, params=query_resp)
+                json_file = response.json()
+                if(json_file['ok'] == True):
+                    reply_text = spec_user + ' unmuted successfully'
+                else:
+                    reply_text = str(json_file)
+        else:
+            reply_text = 'Please reply to a message of the user you want to mute'
+    else:
+        reply_text = "Who this non-admin telling me what to do"
     return reply_text

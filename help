@@ -20,6 +20,8 @@ List of Commands :
 14. /warn - Warn the user. If the user gets three warnings then the user will be 'kicked'. Reply to a message of the user with /warn.
 15. /removewarn - remove 1 warning from the specified user. Reply to a message of the user with /warn.
 16. /warns - Returns the numbers of warnings given to the user. Reply to a message of the user with /warn to use this command.
+17. /mute - Reply to a message of a group member to mute them.
+18. /unmute - Reply to a message of a group member to unmute them.
 
 Extra Features : 
 Welcome and Parting Messages when a user joins or leaves the group
