@@ -75,7 +75,7 @@ while(True):
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command == '/help'):
-                            file_name = path + 'help'
+                            file_name = path + '/help'
                             f = open(file_name)
                             lines= f.readlines()
                             for line in lines:
