@@ -96,7 +96,7 @@ def noOfWarns(message, path, endpoint):
                 spec_user = '@' + message['reply_to_message']['from']['username']
             else:
                 spec_user = message['reply_to_message']['from']['first_name']
-            save_name = path + "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+            save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
             try:
                 with open(save_name, 'rb') as f:
                     user = pickle.load(f)
@@ -125,7 +125,7 @@ def warnUser(message, endpoint, path):
                     else:
                         spec_user = message['reply_to_message']['from']['first_name']
                     
-                    save_name = path + "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+                    save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
                     try:
                         with open(save_name, 'rb') as f:
                             user = pickle.load(f)
@@ -162,7 +162,7 @@ def removeWarn(message, path):
             spec_user = '@' + message['reply_to_message']['from']['username']
         else:
             spec_user = message['reply_to_message']['from']['first_name']
-        save_name = path + "saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+        save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
         try:
             with open(save_name, 'rb') as f:
                 user = pickle.load(f)

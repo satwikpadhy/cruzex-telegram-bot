@@ -5,7 +5,7 @@ from userStatus import userStatus
 
 def notes(chat_id,path):
     try:
-        f = open(path + 'saved_files/' + str(chat_id) + '_' + 'notes.txt')
+        f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
         lines = f.readlines()
         reply_text = 'Notes in this chat :\n'
         for line in lines:
@@ -43,11 +43,11 @@ def save(message,endpoint,spl,token,path):
                 doc_type = 'txt'
 
             chat_id = message['chat']['id']
-            save_name = path + "saved_files/" + str(chat_id) + "_" + note_name + '.txt'
+            save_name = path + "/saved_files/" + str(chat_id) + "_" + note_name + '.txt'
             open(save_name, 'w').write(doc_type + '_' + file_id) #create a new file with file_id
 
             try:
-                f = open(path + 'saved_files/' + str(chat_id) + "_notes.txt")
+                f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt")
                 lines = f.readlines()
                 chk=0
                 for line in lines:
@@ -57,7 +57,7 @@ def save(message,endpoint,spl,token,path):
                 chk = 0
 
             if chk==0:
-                open(path + 'saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n') #update the notes file
+                open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n') #update the notes file
                 reply_text = 'Note added Successfully,\n\nSave Name : ' + save_name
             else:
                 reply_text = 'Note updated successfully, \n\nSave Name : ' + save_name
@@ -74,9 +74,9 @@ def del_note(spl,chat_id,message,endpoint,path):
             note_name = spl[1]
             chk=0
             try:
-                f = open(path + 'saved_files/' + str(chat_id) + '_' + 'notes.txt')
+                f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
                 lines = f.readlines()
-                t = open(path + 'saved_files/temp','w')
+                t = open(path + '/saved_files/temp','w')
 
                 for line in lines:
                     if(note_name+'\n' != line):
@@ -85,13 +85,13 @@ def del_note(spl,chat_id,message,endpoint,path):
                         chk=1
                 f.close()
                 t.close()
-                os.remove(path + 'saved_files/' + str(chat_id) + '_' + 'notes.txt')
-                os.rename(path + 'saved_files/temp' , path + 'saved_files/' + str(chat_id) + '_' + 'notes.txt')
+                os.remove(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
+                os.rename(path + '/saved_files/temp' , path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
                 if(chk==1):
-                    os.remove(path + 'saved_files/' + str(chat_id) + '_' + note_name + '.txt')
-                    reply_text = "Successfully Deleted."
+                    os.remove(path + '/saved_files/' + str(chat_id) + '_' + note_name + '.txt')
+                    reply_text = "Note is successfully deleted."
                 else:
-                    reply_text = "This not doesnot exist."
+                    reply_text = "This note doesnot exist."
             except FileNotFoundError:
                 reply_text = "/save was never used in this chat. Use /help to get help with commands."
     else:
@@ -102,13 +102,13 @@ def get(message, endpoint, spl, token, path):
     chat_id = message['chat']['id']    
     chk=0
     try:
-        f = open(path + 'saved_files/' + str(chat_id) + '_' + 'notes.txt')
+        f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
         lines = f.readlines()
         for line in lines:
             if(spl[1]+'\n' == line):
                 chk=1
         if(chk==1):
-            file_path = path + "saved_files/" + str(chat_id) + "_" + spl[1] + ".txt"
+            file_path = path + "/saved_files/" + str(chat_id) + "_" + spl[1] + ".txt"
             f = open(file_path, 'r')
             contents = f.read()
             type = contents.split("_",1)

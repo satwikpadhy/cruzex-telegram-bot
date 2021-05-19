@@ -10,10 +10,11 @@ from notes import notes, save, del_note, get
 from time_convert import time_convert
 from pin_message import pin_msg, unpin_msg
 from userManagement import banUser, unbanUser, warnUser, noOfWarns, removeWarn, muteUser, unmuteUser
+import os
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
-path = config('path_win_e')
+path = os.path.dirname(__file__)
 endpoint = botapi_url + token
 offset = 0
 method = 'getUpdates'
