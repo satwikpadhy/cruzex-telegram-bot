@@ -75,17 +75,13 @@ while(True):
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command == '/help'):
-                            file_name = path + 'help'
+                            file_name = path + '/help'
                             f = open(file_name)
                             lines= f.readlines()
                             for line in lines:
                                 reply_text += line
                         elif(command == '/rekt'):
                             reply_text = random_rekt(spl,message)
-                        elif(command == '/promote'):
-                            reply_text = promote(message,endpoint)
-                        elif(command == '/demote'):
-                            reply_text = demote(message, endpoint)
                         elif(command == '/save'):
                             reply_text = save(message,endpoint,spl,token,path)
                         elif(command == '/get'):
@@ -96,26 +92,33 @@ while(True):
                             reply_text = del_note(spl, message['chat']['id'],message,endpoint,path)
                         elif(command == '/convert'):
                             reply_text = time_convert(message,spl)
-                        elif(command == '/pin'):
-                            reply_text = pin_msg(message, spl, endpoint)
-                        elif(command == '/unpin'):
-                            reply_text = unpin_msg(message, endpoint)
-                        elif(command == '/ban'):
-                            reply_text = banUser(message,endpoint)
-                        elif(command == '/unban'):
-                            reply_text = unbanUser(message,endpoint)
-                        elif(command == '/kick'):
-                            reply_text = unbanUser(message,endpoint,True)
-                        elif(command == '/warn'):
-                            reply_text = warnUser(message, endpoint, path)
-                        elif(command == '/warns'):
-                            reply_text = noOfWarns(message,path,endpoint)
-                        elif(command == '/removewarn'):
-                            reply_text = removeWarn(message, path)
-                        elif(command == '/mute'):
-                            reply_text = muteUser(message, endpoint)
-                        elif(command == '/unmute'):
-                            reply_text = unmuteUser(message, endpoint)
+                        elif(message['chat']['type'] != 'private'):
+                            if(command == '/promote'):
+                                reply_text = promote(message,endpoint)
+                            elif(command == '/demote'):
+                                reply_text = demote(message, endpoint)
+                            elif(command == '/pin'):
+                                reply_text = pin_msg(message, spl, endpoint)
+                            elif(command == '/unpin'):
+                                reply_text = unpin_msg(message, endpoint)
+                            elif(command == '/ban'):
+                                reply_text = banUser(message,endpoint)
+                            elif(command == '/unban'):
+                                reply_text = unbanUser(message,endpoint)
+                            elif(command == '/kick'):
+                                reply_text = unbanUser(message,endpoint,True)
+                            elif(command == '/warn'):
+                                reply_text = warnUser(message, endpoint, path)
+                            elif(command == '/warns'):
+                                reply_text = noOfWarns(message,path,endpoint)
+                            elif(command == '/removewarn'):
+                                reply_text = removeWarn(message, path)
+                            elif(command == '/mute'):
+                                reply_text = muteUser(message, endpoint)
+                            elif(command == '/unmute'):
+                                reply_text = unmuteUser(message, endpoint)
+                        
+                        
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)

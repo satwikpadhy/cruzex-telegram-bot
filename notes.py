@@ -19,7 +19,7 @@ def notes(chat_id,path):
     
 def save(message,endpoint,spl,token,path):
     status = userStatus(message,endpoint)
-    if(status == 'administrator' or status == 'creator'):
+    if(status == 'administrator' or status == 'creator' or message['chat']['type'] == 'private'):
         if(len(spl) == 1):
             reply_text = "Please Specify the Note Name."
         else:
@@ -67,7 +67,7 @@ def save(message,endpoint,spl,token,path):
 
 def del_note(spl,chat_id,message,endpoint,path):
     status = userStatus(message,endpoint)
-    if(status == 'administrator' or status == 'creator'):
+    if(status == 'administrator' or status == 'creator' or message['chat']['type'] == 'private'):
         if(len(spl) == 1):
             reply_text = "Please specify the note name first."
         else:
