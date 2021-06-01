@@ -4,6 +4,7 @@ import requests
 import os
 from userStatus import userStatus
 import json
+from datetime import datetime, timedelta
 
 class userInfo:
     def __init__(self, user_id, chat_id, warns):
@@ -182,10 +183,14 @@ def removeWarn(message, path):
 
     return reply_text
 
-def muteUser(message,endpoint):
+def muteUser(message,endpoint,spl):
     status = userStatus(message,endpoint)
     if(status == 'administrator' or status == 'creator'):
         if 'reply_to_message' in message:
+            if len(spl) == 1:
+                duration = 'None'
+            else:
+                duration = spl[1]
             chat_id = message['chat']['id']
             user_id = message['reply_to_message']['from']['id']
             admin_check = userStatus(message['reply_to_message'], endpoint)
@@ -208,17 +213,45 @@ def muteUser(message,endpoint):
                             'can_pin_messages' : False
                 }
 
+                now = datetime.now()
+                offset = 0
+                unit = 'N'
+                for ch in duration:
+                    if ch.isdigit():
+                        temp = ch
+                        offset = offset * 10
+                        offset = offset + int(temp)
+                    elif ch.isalpha():
+                        unit = ch
+                        break
+                        
+                #unit accepts m, h, d
+                if unit == 'm':
+                    now = now + timedelta(minutes = offset)
+                    unit = 'minutes'
+                elif unit == 'h':
+                    now = now + timedelta(hours = offset)
+                    unit = 'hours'
+                elif unit == 'd':
+                    now = now + timedelta(days = offset)
+                    unit = 'days'                   
+                
+                unix_time = datetime.timestamp(now)
+                
                 perm = json.dumps(permissions)
                 method_resp = 'restrictChatMember'
-                query_resp = {'chat_id' : chat_id, 'user_id' : user_id, 'permissions' : perm}
+                query_resp = {'chat_id' : chat_id, 'user_id' : user_id, 'permissions' : perm, 'until_date' : unix_time}
                 response = requests.get(endpoint + '/' + method_resp, params=query_resp)
                 json_file = response.json()
                 if(json_file['ok'] == True):
-                    reply_text = spec_user + ' muted successfully'
+                    if offset == 0:
+                        reply_text = spec_user + ' indefinitely muted'
+                    else:
+                        reply_text = spec_user + ' muted for ' + str(offset) + ' ' + unit
                 else:
                     reply_text = str(json_file)
         else:
-            reply_text = 'Please reply to a message of the user you want to mute'
+            reply_text = 'Please reply to a message of the user you want to mute '
     else:
         reply_text = "Who this non-admin telling me what to do"
     return reply_text

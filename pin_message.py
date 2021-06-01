@@ -1,5 +1,6 @@
 import requests
 from userStatus import userStatus
+import sys
 
 def pin_msg(message, spl, endpoint):
     try:
@@ -16,33 +17,34 @@ def pin_msg(message, spl, endpoint):
                     if(spl[1] == 'loud'):
                         query_resp = {'chat_id' : chat_id, 'message_id' : message_id}
                         chk = 1
-                requests.get(endpoint + '/' + method_resp, params=query_resp)
-                reply_text = 'Message pinned successfully'
-                if(chk == 1):
-                    reply_text += ' and everyone has been notified.'
+                json = requests.get(endpoint + '/' + method_resp, params=query_resp).json()
+                if json['ok'] == True:
+                    reply_text = ''
+                else:
+                    reply_text = json['description']
             else:
                 reply_text = "Please reply to an message while using this command."
         else:
             reply_text = "Sorry, non-admins cannot use this command"
     except:
-        reply_text = "Unexpected Error"
+        reply_text = str(sys.exc_info())
     return reply_text
 
 def unpin_msg(message, endpoint):
-    status = userStatus(message,endpoint)
-    if(status == 'administrator' or status == 'creator'):
-        try:
+    try:
+        status = userStatus(message,endpoint)
+        if(status == 'administrator' or status == 'creator'):
             chat_id = message['chat']['id']
             method_resp = 'unpinChatMessage'
             query_resp = {'chat_id' : chat_id}
             response = requests.get(endpoint + '/' + method_resp, params=query_resp)
             json = response.json()
-            if(json['result'] == True):
-                reply_text = 'Last pinned message unpinned successfully'
+            if json['ok'] == True:
+                reply_text = 'Last pinned message unpinned successfully.'
             else:
-                reply_text = str(json)
-        except:
-            reply_text = "unexpected error."
-    else:
-        reply_text = "Sorry, non-admins cannot use this command"
+                reply_text = json['description']
+        else:
+            reply_text = "Sorry, non-admins cannot use this command"
+    except:
+        reply_text = str(sys.exc_info())
     return reply_text

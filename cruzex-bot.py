@@ -20,6 +20,9 @@ offset = 0
 method = 'getUpdates'
 request = endpoint + '/' + method
 
+method_resp = 'getMe'
+getMe = requests.get(endpoint + '/' + method_resp).json()
+
 while(True):
     try:
         query = {'offset': offset}
@@ -32,15 +35,18 @@ while(True):
                     message = update['message']
                     if 'new_chat_participant' in message:
                         newguy = message['new_chat_participant']
-                        chat_id = message['chat']['id']
-                        reply_text = "Hi! "
-
-                        if 'username' in newguy:
-                            reply_text += "@" + newguy['username']
+                        if newguy['id'] == getMe['result']['id']:
+                            reply_text = 'Thankyou for adding me in this group :)'
                         else:
-                            reply_text += newguy['first_name']
+                            chat_id = message['chat']['id']
+                            reply_text = "Hi! "
 
-                        reply_text += ", How are you? You are welcome to this group."
+                            if 'username' in newguy:
+                                reply_text += "@" + newguy['username']
+                            else:
+                                reply_text += newguy['first_name']
+
+                            reply_text += ", How are you? You are welcome to this group."
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)
@@ -114,7 +120,7 @@ while(True):
                             elif(command == '/removewarn'):
                                 reply_text = removeWarn(message, path)
                             elif(command == '/mute'):
-                                reply_text = muteUser(message, endpoint)
+                                reply_text = muteUser(message, endpoint, spl)
                             elif(command == '/unmute'):
                                 reply_text = unmuteUser(message, endpoint)
                         
