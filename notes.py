@@ -2,16 +2,35 @@ import os
 import requests
 import sys
 from userStatus import userStatus
+import json as js
 
-def notes(chat_id,path):
+def notes(chat_id,path,endpoint):
     try:
         f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
         lines = f.readlines()
-        reply_text = 'Notes in this chat :\n'
+        rows = []
+        keyboard= []
+        i = 1
         for line in lines:
-            reply_text += '#'
-            reply_text += line
-        reply_text += '\nAccess them using /get notename'
+            button = {'text' : line, 'callback_data' : line}
+            rows.append(button)
+            if (i%3 == 0 and i != 1):
+                keyboard.append(rows)
+                rows = []
+            i = i+1
+        keyboard.append(rows)
+        inlineKeyboardMarkup = {'inline_keyboard' : keyboard}
+        text = 'Notes in this chat :'
+        method_resp = 'sendMessage'
+        query_resp = {'chat_id' : chat_id, 'text' : text, 'reply_markup' : js.dumps(inlineKeyboardMarkup)}
+        response = requests.get(endpoint + '/' + method_resp, params=query_resp)
+        json = response.json()
+        reply_text = str(json)
+        reply_text = ''    
+
+            #reply_text += '#'
+            #reply_text += line
+        #reply_text += '\nAccess them using /get notename'
     except FileNotFoundError:
         reply_text = "/save was never used in this chat. Use /help to get help with commands."
     finally:
@@ -98,8 +117,8 @@ def del_note(spl,chat_id,message,endpoint,path):
         reply_text = "Sorry, non-admins cannot use this command"
     return reply_text
 
-def get(message, endpoint, spl, token, path):
-    chat_id = message['chat']['id']    
+def get(chat_id, endpoint, spl, token, path):
+    #chat_id = message['chat']['id']    
     chk=0
     try:
         f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
@@ -130,7 +149,7 @@ def get(message, endpoint, spl, token, path):
             else:
                 return reply_text
             requests.get(endpoint + '/' + method_resp, params=query_resp)
-            reply_text = ""
+            reply_text = ''
         else:
             reply_text = "This note doesnot exist."
     except FileNotFoundError:
