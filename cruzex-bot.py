@@ -11,7 +11,6 @@ from time_convert import time_convert
 from pin_message import pin_msg, unpin_msg
 from userManagement import banUser, unbanUser, warnUser, noOfWarns, removeWarn, muteUser, unmuteUser
 import os
-from systemCommands import *
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
