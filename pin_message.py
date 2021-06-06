@@ -11,12 +11,15 @@ def pin_msg(message, spl, endpoint):
                 message_id = message['reply_to_message']['message_id']
                 method_resp = 'pinChatMessage'
                 chk=0
+                
                 if(len(spl) == 1):
                     query_resp = {'chat_id' : chat_id, 'message_id' : message_id, 'disable_notification' : True}   
                 else:
                     if(spl[1] == 'loud'):
                         query_resp = {'chat_id' : chat_id, 'message_id' : message_id}
                         chk = 1
+                    else:
+                        query_resp = {'chat_id' : chat_id, 'message_id' : message_id, 'disable_notification' : True}
                 json = requests.get(endpoint + '/' + method_resp, params=query_resp).json()
                 if json['ok'] == True:
                     reply_text = ''
