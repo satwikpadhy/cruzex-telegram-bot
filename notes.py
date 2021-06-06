@@ -27,10 +27,6 @@ def notes(chat_id,path,endpoint):
         json = response.json()
         reply_text = str(json)
         reply_text = ''    
-
-            #reply_text += '#'
-            #reply_text += line
-        #reply_text += '\nAccess them using /get notename'
     except FileNotFoundError:
         reply_text = "/save was never used in this chat. Use /help to get help with commands."
     finally:
