@@ -31,6 +31,26 @@ while(True):
         if(json['result']):
             result = json['result']
             for update in result:
+                if 'callback_query' in update:
+                        callback_query = update['callback_query']
+                        message = callback_query['message']
+                        message_id = message['message_id']
+                        chat_id = message['chat']['id']
+                        data = callback_query['data']
+                        data = data[:-1]
+                        inp = ['/get ']
+                        inp.append(data)
+                        reply_text = get(chat_id,endpoint,inp,token,path)
+
+                        if reply_text == '':
+                            method_resp = 'deleteMessage'
+                            query_resp = {'chat_id' : chat_id, 'message_id' : message_id}
+                            requests.get(endpoint + '/' + method_resp, params=query_resp)
+                        else:
+                            method_resp = 'editMessageText'
+                            query_resp = {'chat_id' : chat_id, 'message_id' : message_id, 'text' : reply_text}
+                            requests.get(endpoint + '/' + method_resp, params=query_resp)
+                        
                 if 'message' in update:
                     message = update['message']
                     if 'new_chat_participant' in message:
@@ -76,7 +96,8 @@ while(True):
                             temp = temp.split(' ')[0]
                             inp = ['/get']
                             inp.append(temp)
-                            reply_text = get(message,endpoint,inp,token,path)
+                            chat_id = message['chat']['id']
+                            reply_text = get(chat_id,endpoint,inp,token,path)
                         
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
@@ -91,9 +112,9 @@ while(True):
                         elif(command == '/save'):
                             reply_text = save(message,endpoint,spl,token,path)
                         elif(command == '/get'):
-                            reply_text = get(message,endpoint,spl,token, path)
+                            reply_text = get(chat_id,endpoint,spl,token, path)
                         elif(command == '/notes'):
-                            reply_text = notes(message['chat']['id'],path)
+                            reply_text = notes(message['chat']['id'], path, endpoint)
                         elif(command == '/delete'):
                             reply_text = del_note(spl, message['chat']['id'],message,endpoint,path)
                         elif(command == '/convert'):
