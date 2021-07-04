@@ -26,12 +26,12 @@ def notes(chat_id,path,endpoint):
         response = requests.get(endpoint + '/' + method_resp, params=query_resp)
         json = response.json()
         reply_text = str(json)
-        reply_text = ''    
+        reply_text = ''
     except FileNotFoundError:
         reply_text = "/save was never used in this chat. Use /help to get help with commands."
     finally:
         return reply_text
-    
+
 def save(message,endpoint,spl,token,path):
     status = userStatus(message,endpoint)
     if(status == 'administrator' or status == 'creator' or message['chat']['type'] == 'private'):
@@ -59,14 +59,14 @@ def save(message,endpoint,spl,token,path):
 
             chat_id = message['chat']['id']
             save_name = path + "/saved_files/" + str(chat_id) + "_" + note_name + '.txt'
-            open(save_name, 'w').write(doc_type + '_' + file_id) #create a new file with file_id 
+            open(save_name, 'w').write(doc_type + '_' + file_id) #create a new file with file_id
 
             try:
                 f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt") #checking if the notename already existed
                 lines = f.readlines()
                 chk=0
                 for line in lines:
-                    if spl[1] + '\n' == line: 
+                    if spl[1] + '\n' == line:
                         chk = 1 #If note exits set chk to 1 so that a new entry with the same name is not added
                 f.close()
             except:
@@ -78,7 +78,7 @@ def save(message,endpoint,spl,token,path):
 
                 if note_name.lower() < lines[0].lower():
                     #If notename lower than first element of notes file, add at the beginning of the file
-                    f2 = open(path + '/saved_files/' + str(chat_id) + 'temp.txt', 'w')
+                    f2 = open(path + '/saved_files/' + str(chat_id) + '_temp.txt', 'w')
                     f2.write(note_name + '\n')
                     for line in lines:
                         f2.write(line)
@@ -103,7 +103,7 @@ def save(message,endpoint,spl,token,path):
             else:
                 reply_text = 'Note updated successfully, \n\nSave Name : ' + save_name
     else:
-        reply_text = "Sorry, non-admins cannot use this command"  
+        reply_text = "Sorry, non-admins cannot use this command"
     return reply_text
 
 def del_note(spl,chat_id,message,endpoint,path):
@@ -140,7 +140,7 @@ def del_note(spl,chat_id,message,endpoint,path):
     return reply_text
 
 def get(chat_id, endpoint, spl, token, path):
-    #chat_id = message['chat']['id']    
+    #chat_id = message['chat']['id']
     chk=0
     try:
         f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
