@@ -19,9 +19,12 @@ endpoint = botapi_url + token
 offset = 0
 method = 'getUpdates'
 request = endpoint + '/' + method
-
-method_resp = 'getMe'
-getMe = requests.get(endpoint + '/' + method_resp).json()
+try:
+    method_resp = 'getMe'
+    getMe = requests.get(endpoint + '/' + method_resp).json()
+except:
+    print(time.ctime(), ": Unexpected error", sys.exc_info()[0])
+    time.sleep(30)
 
 while(True):
     try:
