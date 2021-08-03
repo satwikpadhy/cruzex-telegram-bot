@@ -73,35 +73,43 @@ def save(message,endpoint,spl,token,path):
                 chk = 0
 
             if chk==0: #This portion is executed ONLY if the note doesnt exist already
-                f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                lines = f.readlines()
+                try:
+                    f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt")
+                    lines = f.readlines()
 
-                if note_name.lower() < lines[0].lower():
-                    #If notename lower than first element of notes file, add at the beginning of the file
-                    f2 = open(path + '/saved_files/' + str(chat_id) + '_temp.txt', 'w')
-                    f2.write(note_name + '\n')
-                    for line in lines:
-                        f2.write(line)
+                    if note_name.lower() < lines[0].lower():
+                        #If notename lower than first element of notes file, add at the beginning of the file
+                        f2 = open(path + '/saved_files/' + str(chat_id) + '_temp.txt', 'w')
+                        f2.write(note_name + '\n')
+                        for line in lines:
+                            f2.write(line)
+                        f.close()
+                        f2.close()
+                        os.remove(path + '/saved_files/' + str(chat_id) + "_notes.txt")
+                        os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
+                        
+                    elif note_name.lower() > lines[len(lines) - 1].lower():
+                        #If notename higher than last element of notes file, add at the end of the file
+                        open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n')
+                    else:
+                        f2 = open(path + '/saved_files/' + str(chat_id) + '_temp.txt', 'w')
+                        for i in range(0, len(lines)):
+                            f2.write(lines[i])
+                            if(note_name.lower() > lines[i].lower() and note_name.lower() < lines[i+1].lower()):
+                                f2.write(note_name + '\n')
+                        f.close()
+                        f2.close()
+                        os.remove(path + '/saved_files/' + str(chat_id) + "_notes.txt")
+                        os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
+                        
+                    reply_text = 'Note added Successfully!'
+                except FileNotFoundError:
+                    f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'w') #If save was never used in the chat :
+                    f.write(note_name + '\n')
                     f.close()
-                    os.remove(path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                    os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                    f2.close()
-                elif note_name.lower() > lines[len(lines) - 1].lower():
-                    #If notename higher than last element of notes file, add at the end of the file
-                    open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n')
-                else:
-                    f2 = open(path + '/saved_files/' + str(chat_id) + '_temp.txt', 'w')
-                    for i in range(0, len(lines)):
-                        f2.write(lines[i])
-                        if(note_name.lower() > lines[i].lower() and note_name.lower() < lines[i+1].lower()):
-                            f2.write(note_name + '\n')
-                    f.close()
-                    os.remove(path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                    os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                    f2.close()
-                reply_text = 'Note added Successfully,\n\nSave Name : ' + save_name
+                    reply_text = 'Note added Successfully!. Use /notes to access your notes'
             else:
-                reply_text = 'Note updated successfully, \n\nSave Name : ' + save_name
+                reply_text = 'Note updated successfully!'
     else:
         reply_text = "Sorry, non-admins cannot use this command"
     return reply_text
