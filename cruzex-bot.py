@@ -19,12 +19,6 @@ endpoint = botapi_url + token
 offset = 0
 method = 'getUpdates'
 request = endpoint + '/' + method
-try:
-    method_resp = 'getMe'
-    getMe = requests.get(endpoint + '/' + method_resp).json()
-except:
-    print(time.ctime(), ": Unexpected error", sys.exc_info()[0])
-    time.sleep(30)
 
 while(True):
     try:
@@ -58,6 +52,7 @@ while(True):
                     message = update['message']
                     if 'new_chat_participant' in message:
                         newguy = message['new_chat_participant']
+                        getMe = requests.get(endpoint + '/' + 'getMe').json()
                         if newguy['id'] == getMe['result']['id']:
                             reply_text = 'Thankyou for adding me in this group :)'
                         else:
