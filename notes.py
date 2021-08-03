@@ -103,7 +103,7 @@ def save(message,endpoint,spl,token,path):
                         os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
                         
                     reply_text = 'Note added Successfully!'
-                except FileNotFoundError:
+                except (FileNotFoundError, IndexError):
                     f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'w') #If save was never used in the chat :
                     f.write(note_name + '\n')
                     f.close()
