@@ -53,10 +53,10 @@ while(True):
                     if 'new_chat_participant' in message:
                         newguy = message['new_chat_participant']
                         getMe = requests.get(endpoint + '/' + 'getMe').json()
+                        chat_id = message['chat']['id']
                         if newguy['id'] == getMe['result']['id']:
-                            reply_text = 'Thankyou for adding me in this group :)'
+                            reply_text = 'Thankyou for adding me in this group. Press /help to get a list of commands.'
                         else:
-                            chat_id = message['chat']['id']
                             reply_text = "Hi! "
 
                             if 'username' in newguy:
@@ -99,7 +99,7 @@ while(True):
                         
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
-                        elif(command == '/help'):
+                        elif(command[:5] == '/help'):
                             file_name = path + '/help'
                             f = open(file_name)
                             lines= f.readlines()
