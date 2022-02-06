@@ -47,7 +47,7 @@ while(True):
                             method_resp = 'editMessageText'
                             query_resp = {'chat_id' : chat_id, 'message_id' : message_id, 'text' : reply_text}
                             requests.get(endpoint + '/' + method_resp, params=query_resp)
-                        
+
                 if 'message' in update:
                     message = update['message']
                     if 'new_chat_participant' in message:
@@ -96,7 +96,7 @@ while(True):
                             inp.append(temp)
                             chat_id = message['chat']['id']
                             reply_text = get(chat_id,endpoint,inp,token,path)
-                        
+
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command[:5] == '/help'):
@@ -112,9 +112,9 @@ while(True):
                         elif(command == '/get'):
                             reply_text = get(chat_id,endpoint,spl,token, path)
                         elif(command == '/notes'):
-                            reply_text = notes(message['chat']['id'], path, endpoint)
+                            reply_text = notes(message['chat']['id'], path, endpoint, token)
                         elif(command == '/delete'):
-                            reply_text = del_note(spl, message['chat']['id'],message,endpoint,path)
+                            reply_text = del_note(spl, message['chat']['id'],message,endpoint,path,token)
                         elif(command == '/convert'):
                             reply_text = time_convert(message,spl)
                         elif(message['chat']['type'] != 'private'):
@@ -142,8 +142,8 @@ while(True):
                                 reply_text = muteUser(message, endpoint, spl)
                             elif(command == '/unmute'):
                                 reply_text = unmuteUser(message, endpoint)
-                        
-                        
+
+
                         method_resp = 'sendMessage'
                         query_resp = {'chat_id' : chat_id, 'text' : reply_text}
                         requests.get(endpoint + '/' + method_resp, params=query_resp)
@@ -152,7 +152,7 @@ while(True):
 
     except ValueError:
         print(time.ctime(), ": Broken response: ", response)
-        time.sleep(60)        
+        time.sleep(60)
     except KeyboardInterrupt:
         print(time.ctime(), ": Ctrl-C pressed - exiting")
         exit(1)

@@ -3,9 +3,12 @@ import requests
 import sys
 from userStatus import userStatus
 import json as js
+from cryptography.fernet import Fernet
 
-def notes(chat_id,path,endpoint):
+def notes(chat_id,path,endpoint,token):
     try:
+        key = str(token) + str(chat_id)
+        print(key)
         f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
         lines = f.readlines()
         rows = []
@@ -29,10 +32,15 @@ def notes(chat_id,path,endpoint):
         reply_text = ''
     except FileNotFoundError:
         reply_text = "/save was never used in this chat. Use /help to get help with commands."
+    except :
+        reply_text = "Unexpected error"
     finally:
         return reply_text
 
 def save(message,endpoint,spl,token,path):
+    key = str(token) + str(message['chat']['id'])
+    print(key)
+    #print(str(message))
     status = userStatus(message,endpoint)
     if(status == 'administrator' or status == 'creator' or message['chat']['type'] == 'private'):
         if(len(spl) == 1):
@@ -87,7 +95,7 @@ def save(message,endpoint,spl,token,path):
                         f2.close()
                         os.remove(path + '/saved_files/' + str(chat_id) + "_notes.txt")
                         os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                        
+
                     elif note_name.lower() > lines[len(lines) - 1].lower():
                         #If notename higher than last element of notes file, add at the end of the file
                         open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'a').write(note_name + '\n')
@@ -101,7 +109,7 @@ def save(message,endpoint,spl,token,path):
                         f2.close()
                         os.remove(path + '/saved_files/' + str(chat_id) + "_notes.txt")
                         os.rename(path + '/saved_files/' + str(chat_id) + '_temp.txt', path + '/saved_files/' + str(chat_id) + "_notes.txt")
-                        
+
                     reply_text = 'Note added Successfully!'
                 except (FileNotFoundError, IndexError):
                     f = open(path + '/saved_files/' + str(chat_id) + "_notes.txt", 'w') #If save was never used in the chat :
@@ -114,7 +122,9 @@ def save(message,endpoint,spl,token,path):
         reply_text = "Sorry, non-admins cannot use this command"
     return reply_text
 
-def del_note(spl,chat_id,message,endpoint,path):
+def del_note(spl,chat_id,message,endpoint,path,token):
+    key = str(token) + str(chat_id)
+    print(key)
     status = userStatus(message,endpoint)
     if(status == 'administrator' or status == 'creator' or message['chat']['type'] == 'private'):
         if(len(spl) == 1):
@@ -151,6 +161,8 @@ def get(chat_id, endpoint, spl, token, path):
     #chat_id = message['chat']['id']
     chk=0
     try:
+        key = str(token) + str(chat_id)
+        print(key)
         f = open(path + '/saved_files/' + str(chat_id) + '_' + 'notes.txt')
         lines = f.readlines()
         for line in lines:
