@@ -3,7 +3,7 @@ import requests
 import sys
 from userStatus import userStatus
 import json as js
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 
 def notes(chat_id,path,endpoint,token):
     try:
