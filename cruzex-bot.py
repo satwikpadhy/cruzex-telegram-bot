@@ -46,7 +46,6 @@ while(True):
                             method_resp = 'editMessageText'
                             query_resp = {'chat_id' : chat_id, 'message_id' : message_id, 'text' : reply_text}
                             requests.get(endpoint + '/' + method_resp, params=query_resp)
-
                 if 'message' in update:
                     message = update['message']
                     if 'new_chat_participant' in message:
