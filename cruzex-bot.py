@@ -36,7 +36,7 @@ while(True):
                         data = callback_query['data']
                         inp = ['/get ']
                         inp.append(data)
-                        reply_text = get(chat_id,endpoint,inp,token,path)
+                        reply_text = get(chat_id,endpoint,inp)
 
                         if reply_text == '':
                             method_resp = 'deleteMessage'
@@ -106,13 +106,13 @@ while(True):
                         elif(command == '/rekt'):
                             reply_text = random_rekt(spl,message)
                         elif(command == '/save'):
-                            reply_text = save(message,endpoint,spl,token,path)
+                            reply_text = save(message,endpoint,spl)
                         elif(command == '/get'):
-                            reply_text = get(chat_id,endpoint,spl,token, path)
+                            reply_text = get(chat_id,endpoint,spl)
                         elif(command == '/notes'): #support for /notes@bot_id to be added.
-                            reply_text = notes(message['chat']['id'], path, endpoint, token)
+                            reply_text = notes(message['chat']['id'],endpoint)
                         elif(command == '/delete'):
-                            reply_text = del_note(spl, message['chat']['id'],message,endpoint,path,token)
+                            reply_text = del_note(spl,message,endpoint)
                         elif(command == '/convert'):
                             reply_text = time_convert(message,spl)
                         elif(message['chat']['type'] != 'private'):

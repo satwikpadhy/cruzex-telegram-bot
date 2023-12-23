@@ -12,7 +12,7 @@ password = config('password')
 port = config('port')
 
 
-def notes(chat_id,path,endpoint,token): #"save was never used" to be implemented when there are no records presend for particular chat_id
+def notes(chat_id,endpoint):
     try:
         reply_text = ''
         conn = psycopg2.connect(
@@ -21,8 +21,7 @@ def notes(chat_id,path,endpoint,token): #"save was never used" to be implemented
             host= host,
             password = password,
             port = port
-        )
-        print(chat_id)       
+        )      
         cursor = conn.cursor()
         cursor.execute("select notename from savednotes where chat_id = %s" , (str(chat_id),))
         rowcount = cursor.rowcount
@@ -30,7 +29,6 @@ def notes(chat_id,path,endpoint,token): #"save was never used" to be implemented
             reply_text = '/save was never used in this chat.'
         else:
             lines = cursor.fetchall()
-            print(lines)
             rows = []
             keyboard= []
             i = 1
@@ -53,7 +51,7 @@ def notes(chat_id,path,endpoint,token): #"save was never used" to be implemented
     except :
         reply_text = "Unexpected error" + str(sys.exc_info())
 
-def save(message,endpoint,spl,token,path):
+def save(message,endpoint,spl):
     try:
         reply_text = ''
         status = userStatus(message,endpoint)
@@ -111,7 +109,8 @@ def save(message,endpoint,spl,token,path):
     except:
         return "Unexpected error" + str(sys.exc_info()[0])
 
-def del_note(spl,chat_id,message,endpoint,path,token):
+def del_note(spl,message,endpoint):
+    chat_id = message['chat']['id']
     status = userStatus(message,endpoint)
     if(status == 'administrator' or status == 'creator' or message['chat']['type'] == 'private'):
         if(len(spl) == 1):
@@ -143,7 +142,7 @@ def del_note(spl,chat_id,message,endpoint,path,token):
         reply_text = "Sorry, non-admins cannot use this command"
     return reply_text
 
-def get(chat_id, endpoint, spl, token, path):
+def get(chat_id, endpoint, spl):
     reply_text = ''
     try:
         conn = psycopg2.connect(
@@ -161,7 +160,6 @@ def get(chat_id, endpoint, spl, token, path):
             doc_type = rows[0][1]
             file_id = rows[0][0]
             reply_text = "Here is your saved text :\n\n" + file_id #used for the case when the note is a saved text.
-            print("doc_type = ", doc_type, "\nfile_id = ", file_id)
             if(doc_type == 'img'):
                 method_resp = 'sendPhoto'
                 query_resp = {'chat_id' : chat_id, 'photo' : file_id, 'caption' : "Here is your note"}
