@@ -34,7 +34,6 @@ while(True):
                         message_id = message['message_id']
                         chat_id = message['chat']['id']
                         data = callback_query['data']
-                        data = data[:-1]
                         inp = ['/get ']
                         inp.append(data)
                         reply_text = get(chat_id,endpoint,inp,token,path)
@@ -111,7 +110,7 @@ while(True):
                             reply_text = save(message,endpoint,spl,token,path)
                         elif(command == '/get'):
                             reply_text = get(chat_id,endpoint,spl,token, path)
-                        elif(command == '/notes'):
+                        elif(command == '/notes'): #support for /notes@bot_id to be added.
                             reply_text = notes(message['chat']['id'], path, endpoint, token)
                         elif(command == '/delete'):
                             reply_text = del_note(spl, message['chat']['id'],message,endpoint,path,token)
