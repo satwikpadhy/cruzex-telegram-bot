@@ -10,12 +10,11 @@
  1. create a file named .env in the bot directory
  2. File contents : 
    token='Your BOT TOKEN'
-   path='Path to the working directory'
    database='Your postgres database name'
-   user='your postgres username'
    host='your host ip address'
-   password='your postgres password'
    port='your postgres server password'
+   user='your postgres username'
+   password='your postgres password'
    my_chat_id='chat id of the chat you want /ip to work'
   
  3. Run the program using the following command :

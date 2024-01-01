@@ -14,7 +14,7 @@ import os
 
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
-path = os.path.dirname(__file__)
+# path = os.path.dirname(__file__)
 endpoint = str(botapi_url) + str(token)
 offset = 0
 method = 'getUpdates'
@@ -94,7 +94,7 @@ while(True):
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
                         elif(command[:5] == '/help'):
-                            file_name = path + '/help'
+                            file_name = os.path.dirname(__file__) + '/help'
                             f = open(file_name)
                             lines= f.readlines()
                             for line in lines:
@@ -127,11 +127,11 @@ while(True):
                             elif(command == '/kick'):
                                 reply_text = unbanUser(message,endpoint,True)
                             elif(command == '/warn'):
-                                reply_text = warnUser(message, endpoint, path)
+                                reply_text = warnUser(message, endpoint)
                             elif(command == '/warns'):
-                                reply_text = noOfWarns(message,path,endpoint)
+                                reply_text = noOfWarns(message,endpoint)
                             elif(command == '/removewarn'):
-                                reply_text = removeWarn(message, path)
+                                reply_text = removeWarn(message)
                             elif(command == '/mute'):
                                 reply_text = muteUser(message, endpoint, spl)
                             elif(command == '/unmute'):

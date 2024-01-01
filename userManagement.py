@@ -91,7 +91,7 @@ def unbanUser(message,endpoint,kick = False): #if kick is true then the user is 
         reply_text = "Who this non-admin telling me what to do"
     return reply_text
 
-def noOfWarns(message, path, endpoint):
+def noOfWarns(message, endpoint):
     if 'reply_to_message' in message:
         admin_check = userStatus(message['reply_to_message'], endpoint)
         if(admin_check == 'administrator' or admin_check == 'creator'):
@@ -121,7 +121,7 @@ def noOfWarns(message, path, endpoint):
 
     return reply_text
 
-def warnUser(message, endpoint, path):
+def warnUser(message, endpoint):
     status = userStatus(message,endpoint)
     reply_text = ''
     if(status == 'administrator' or status == 'creator'):
@@ -177,7 +177,7 @@ def warnUser(message, endpoint, path):
         reply_text = "Who this non-admin telling me what to do"
     return reply_text
 
-def removeWarn(message, path):
+def removeWarn(message):
     if 'reply_to_message' in message:
         chat_id = message['chat']['id']
         user_id = message['reply_to_message']['from']['id']
