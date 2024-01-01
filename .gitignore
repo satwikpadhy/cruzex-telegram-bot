@@ -1,5 +1,5 @@
 .env
-.vscode/settings.json
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -35,11 +35,6 @@ coverage.xml
 
 # Translations
 *.mo
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
 
 # Rope
 .ropeproject
