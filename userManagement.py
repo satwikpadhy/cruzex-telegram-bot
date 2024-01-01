@@ -1,7 +1,5 @@
 import sys
-import pickle
 import requests
-import os
 from userStatus import userStatus
 import json
 from datetime import datetime, timedelta

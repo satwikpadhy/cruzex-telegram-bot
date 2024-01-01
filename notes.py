@@ -60,49 +60,53 @@ def save(message,endpoint,spl):
                 reply_text = "Please Specify the Note Name."
             else:
                 note_name = spl[1] #The name of the note.
-                reply_to_message = message['reply_to_message']
-                if 'document' in reply_to_message:
-                    file_id = reply_to_message['document']['file_id']
-                    doc_type = 'doc'
-                elif 'photo' in reply_to_message:
-                    photo = reply_to_message['photo'][0]
-                    file_id = photo['file_id']
-                    doc_type = 'img'
-                elif 'audio' in reply_to_message:
-                    file_id = reply_to_message['audio']['file_id']
-                    doc_type = 'aud'
-                elif 'video' in reply_to_message:
-                    file_id = reply_to_message['video']['file_id']
-                    doc_type = 'vid'
+                print(message)
+                if('reply_to_message' in message):
+                    reply_to_message = message['reply_to_message']
+                    if 'document' in reply_to_message:
+                        file_id = reply_to_message['document']['file_id']
+                        doc_type = 'doc'
+                    elif 'photo' in reply_to_message:
+                        photo = reply_to_message['photo'][0]
+                        file_id = photo['file_id']
+                        doc_type = 'img'
+                    elif 'audio' in reply_to_message:
+                        file_id = reply_to_message['audio']['file_id']
+                        doc_type = 'aud'
+                    elif 'video' in reply_to_message:
+                        file_id = reply_to_message['video']['file_id']
+                        doc_type = 'vid'
+                    else:
+                        file_id = reply_to_message['text']
+                        doc_type = 'txt'
+
+                    chat_id = message['chat']['id']
+
+                    conn = psycopg2.connect(
+                        database = dbname, 
+                        user = user, 
+                        host= host,
+                        password = password,
+                        port = port
+                    )
+                    
+                    cursor = conn.cursor()
+                    try:
+                        cursor.execute( 'insert into savednotes values(%s,%s,%s,%s)' , (str(chat_id), note_name, str(file_id), doc_type))
+                    except psycopg2.errors.UniqueViolation:
+                        print("Note already exists") 
+                        conn.rollback()
+                        cursor.execute("update savednotes set data = %s, type = %s where chat_id = %s and notename = %s" , (str(file_id), doc_type, str(chat_id), note_name))
+                    except:
+                        reply_text = "Unexpected error" + str(sys.exc_info())
+                    finally:
+                        cursor.close()
+                        conn.commit()
+                        reply_text = 'Note saved successfully!'
+                    conn.close()
                 else:
-                    file_id = reply_to_message['text']
-                    doc_type = 'txt'
-
-                chat_id = message['chat']['id']
-
-                conn = psycopg2.connect(
-                    database = dbname, 
-                    user = user, 
-                    host= host,
-                    password = password,
-                    port = port
-                )
+                    reply_text = 'Please reply to the message/file you want to save while using this command'
                 
-                cursor = conn.cursor()
-                try:
-                    cursor.execute( 'insert into savednotes values(%s,%s,%s,%s)' , (str(chat_id), note_name, str(file_id), doc_type))
-                except psycopg2.errors.UniqueViolation:
-                    print("Note already exists") 
-                    conn.rollback()
-                    cursor.execute("update savednotes set data = %s, type = %s where chat_id = %s and notename = %s" , (str(file_id), doc_type, str(chat_id), note_name))
-                except:
-                    reply_text = "Unexpected error" + str(sys.exc_info())
-                finally:
-                    cursor.close()
-                    conn.commit()
-                    reply_text = 'Note saved successfully!'
-
-                conn.close()
         else:
             reply_text = "Sorry, non-admins cannot use this command"
         return reply_text
@@ -134,15 +138,16 @@ def del_note(spl,message,endpoint):
                 else:
                     conn.commit()
                     reply_text = 'Note deleted successfully!!'
+                conn.close()
             except:
                 reply_text = "Unexpected error" + str(sys.exc_info())
-            finally:
-                conn.close()
+            # finally:
+            #     conn.close()
     else:
         reply_text = "Sorry, non-admins cannot use this command"
     return reply_text
 
-def get(chat_id, endpoint, spl):
+def get(chat_id, endpoint, notename):
     reply_text = ''
     try:
         conn = psycopg2.connect(
@@ -154,7 +159,7 @@ def get(chat_id, endpoint, spl):
         )
                 
         cursor = conn.cursor()
-        cursor.execute("select data, type from savednotes where chat_id = %s and notename = %s" , (str(chat_id),spl[1],))
+        cursor.execute("select data, type from savednotes where chat_id = %s and notename = %s" , (str(chat_id),notename))
         rows = cursor.fetchall()
         if( rows ):
             doc_type = rows[0][1]

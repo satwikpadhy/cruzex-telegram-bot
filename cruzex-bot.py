@@ -15,7 +15,7 @@ import os
 botapi_url = 'https://api.telegram.org/bot'
 token = config('token')
 path = os.path.dirname(__file__)
-endpoint = botapi_url + token
+endpoint = str(botapi_url) + str(token)
 offset = 0
 method = 'getUpdates'
 request = endpoint + '/' + method
@@ -35,9 +35,7 @@ while(True):
                         message_id = message['message_id']
                         chat_id = message['chat']['id']
                         data = callback_query['data']
-                        inp = ['/get ']
-                        inp.append(data)
-                        reply_text = get(chat_id,endpoint,inp)
+                        reply_text = get(chat_id,endpoint,data)
 
                         if reply_text == '':
                             method_resp = 'deleteMessage'
@@ -89,12 +87,9 @@ while(True):
                         reply_text = ''
 
                         if(text[:1] == '#'):
-                            temp = text.split('#')[1]
-                            temp = temp.split(' ')[0]
-                            inp = ['/get']
-                            inp.append(temp)
+                            notename = text.split('#')[1]
                             chat_id = message['chat']['id']
-                            reply_text = get(chat_id,endpoint,inp,token,path)
+                            reply_text = get(chat_id,endpoint,notename)
 
                         if(command == '/start'):
                             reply_text = 'Hello I am @cruzex_bot. Send /help to get a list of commands.'
@@ -109,7 +104,7 @@ while(True):
                         elif(command == '/save'):
                             reply_text = save(message,endpoint,spl)
                         elif(command == '/get'):
-                            reply_text = get(chat_id,endpoint,spl)
+                            reply_text = get(chat_id,endpoint,spl[1])
                         elif(command == '/notes'): #support for /notes@bot_id to be added.
                             reply_text = notes(message['chat']['id'],endpoint)
                         elif(command == '/delete'):
@@ -150,7 +145,7 @@ while(True):
 
 
     except ValueError:
-        print(time.ctime(), ": Broken response: ", response)
+        print(time.ctime(), ": Broken response:") #", response)
         time.sleep(60)
     except KeyboardInterrupt:
         print(time.ctime(), ": Ctrl-C pressed - exiting")
