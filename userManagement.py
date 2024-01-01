@@ -5,6 +5,14 @@ import os
 from userStatus import userStatus
 import json
 from datetime import datetime, timedelta
+import psycopg2
+from decouple import config
+
+dbname = config('database')
+user = config('user')
+host = config('host')
+password = config('password')
+port = config('port')
 
 class userInfo:
     def __init__(self, user_id, chat_id, warns):
@@ -44,7 +52,7 @@ def banUser(message,endpoint):
         reply_text = "Who this non-admin telling me what to do"
     return reply_text
 
-def unbanUser(message,endpoint,kick = False):
+def unbanUser(message,endpoint,kick = False): #if kick is true then the user is kicked
     status = userStatus(message,endpoint)
     if(status == 'administrator' or status == 'creator'):
         try:
@@ -97,13 +105,19 @@ def noOfWarns(message, path, endpoint):
                 spec_user = '@' + message['reply_to_message']['from']['username']
             else:
                 spec_user = message['reply_to_message']['from']['first_name']
-            save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
-            try:
-                with open(save_name, 'rb') as f:
-                    user = pickle.load(f)
-                    reply_text = spec_user + " has " + str(user.warns) + ' warnings'
-            except FileNotFoundError:
-                reply_text = spec_user +' has never been warned'
+            
+            conn = psycopg2.connect(
+            database = dbname, 
+            user = user, 
+            host= host,
+            password = password,
+            port = port
+            )      
+            cursor = conn.cursor()
+
+            cursor.execute('select no_warns from warns where chat_id = %s and user_id = %s', (str(chat_id),str(user_id)))
+            lines = cursor.fetchall()
+            reply_text = spec_user + ' has ' + str(lines[0][0]) + ' warnings.'
     else:
         reply_text = 'Please reply to a message of the user you want to ban'
 
@@ -125,28 +139,38 @@ def warnUser(message, endpoint, path):
                         spec_user = '@' + message['reply_to_message']['from']['username']
                     else:
                         spec_user = message['reply_to_message']['from']['first_name']
-                    
-                    save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
-                    try:
-                        with open(save_name, 'rb') as f:
-                            user = pickle.load(f)
-                            user.warns += 1
-                            warns = user.warns
 
-                        with open(save_name, 'wb') as f:
-                            pickle.dump(user, f)
-                        
-                    except FileNotFoundError: 
-                        #If file is not found then the user was never warned in the chat before.
-                        user = userInfo(user_id, chat_id, 1)
-                        with open(save_name, 'wb') as f:
-                            pickle.dump(user, f)
-                            warns = 1
-                    if(warns == 3):
-                        reply_text = unbanUser(message, endpoint, True)
-                        os.remove(save_name)
+                    conn = psycopg2.connect(
+                    database = dbname, 
+                    user = user, 
+                    host= host,
+                    password = password,
+                    port = port
+                    )      
+                    cursor = conn.cursor()
+                    cursor.execute('select no_warns from warns where chat_id = %s and user_id = %s', (str(chat_id),str(user_id)))
+                    rowcount = cursor.rowcount
+                    
+                    if rowcount == 0: #Warn was never used for this user in this chat.
+                        cursor.execute('insert into warns values (%s,%s,1)' , (str(chat_id),str(user_id)))
+                        cursor.close()
+                        conn.commit()
+                        reply_text = 'Warn was never used before. Adding one warn'
                     else:
-                        reply_text = spec_user + ' has ' + str(warns) + " warnings"
+                        cursor.execute('select no_warns from warns where chat_id = %s and user_id = %s', (str(chat_id),str(user_id)))
+                        lines = cursor.fetchall()
+                        warns = lines[0][0] + 1
+                        if(warns >= 3):
+                            reply_text = unbanUser(message, endpoint, True)
+                            cursor.execute('delete from warns where chat_id = %s and user_id = %s', (str(chat_id),str(user_id)))
+                            cursor.close()
+                            conn.commit()
+                        else:
+                            cursor.execute('update warns set no_warns = %s where chat_id = %s and user_id = %s', (warns,str(chat_id),str(user_id)))
+                            cursor.close()
+                            conn.commit()
+                            reply_text = 'adding one warn'
+                    conn.close()
             else:
                 reply_text = 'Please reply to a message of the user you want to warn.'
         except:
@@ -163,21 +187,29 @@ def removeWarn(message, path):
             spec_user = '@' + message['reply_to_message']['from']['username']
         else:
             spec_user = message['reply_to_message']['from']['first_name']
-        save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
+        # save_name = path + "/saved_files/" + str(chat_id) + '_' + str(user_id) + '_warns.txt'
         try:
-            with open(save_name, 'rb') as f:
-                user = pickle.load(f)
-
-            if(user.warns == 0):
+            conn = psycopg2.connect(
+                    database = dbname, 
+                    user = user, 
+                    host= host,
+                    password = password,
+                    port = port
+            )      
+            cursor = conn.cursor()
+            cursor.execute('select no_warns from warns where chat_id = %s and user_id = %s', (str(chat_id),str(user_id)))
+            warns = cursor.fetchall()[0][0]
+            if(warns == 0):
                 reply_text = spec_user + " has no warnings."
             else:
-                user.warns -= 1
-                with open(save_name, 'wb') as f:
-                    pickle.dump(user,f)
-                reply_text = spec_user + " has " + str(user.warns) + ' warnings'
+                warns -= 1
+                cursor.execute('update warns set no_warns = %s where chat_id = %s and user_id = %s', (warns,str(chat_id),str(user_id)))
+                cursor.close()
+                conn.commit()
+                reply_text = spec_user + " has " + str(warns) + ' warnings'
 
-        except FileNotFoundError:
-            reply_text = spec_user +' has never been warned'
+        except :
+            reply_text = str(sys.exc_info())
     else:
         reply_text = 'Please reply to a message of the user you want to remove the warn from.'
 

@@ -27,6 +27,7 @@ while(True):
         json = response.json()
         if(json['result']):
             result = json['result']
+            print(result)
             for update in result:
                 if 'callback_query' in update:
                         callback_query = update['callback_query']
