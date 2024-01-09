@@ -23,7 +23,7 @@ def notes(chat_id,endpoint):
             port = port
         )      
         cursor = conn.cursor()
-        cursor.execute("select notename from savednotes where chat_id = %s" , (str(chat_id),))
+        cursor.execute("select notename from savednotes where chat_id = %s order by notename" , (str(chat_id),))
         rowcount = cursor.rowcount
         if rowcount == 0:
             reply_text = '/save was never used in this chat.'

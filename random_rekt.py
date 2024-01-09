@@ -3,6 +3,7 @@ import time
 import requests
 
 def random_rekt(spl,message):
+    reply_text = ''
     if 'username' in message['from']:
         user_from = '@' + message['from']['username']
     else:
